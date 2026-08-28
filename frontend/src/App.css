@@ -1,0 +1,176 @@
+.app {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+header h1 {
+  margin-bottom: 0.25rem;
+}
+
+.stack {
+  color: #616e7c;
+  font-size: 0.9rem;
+}
+
+.story-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-bottom: 2rem;
+  background: white;
+  border: 1px solid #e4e7eb;
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+.story-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #3e4c59;
+}
+
+.story-form input,
+.story-form textarea,
+.story-form select {
+  font-family: inherit;
+  padding: 0.6rem;
+  border: 1px solid #cbd2d9;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: normal;
+  color: #1f2933;
+}
+
+.story-form textarea {
+  resize: vertical;
+}
+
+.story-form button {
+  align-self: flex-start;
+  padding: 0.6rem 1.2rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.story-form button:hover {
+  background-color: #1d4ed8;
+}
+
+.error {
+  background: #fde8e8;
+  color: #9b1c1c;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.empty {
+  text-align: center;
+  color: #616e7c;
+}
+
+.story-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.story-list li {
+  background: white;
+  border: 1px solid #e4e7eb;
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+}
+
+.story-list li.done {
+  opacity: 0.65;
+}
+
+.story-list li.done .story-sentence {
+  text-decoration: line-through;
+}
+
+.story-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.story-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0.03em;
+}
+
+.badge-must {
+  background-color: #cf1124;
+}
+
+.badge-should {
+  background-color: #e8590c;
+}
+
+.badge-could {
+  background-color: #d4a72c;
+}
+
+.badge-wont {
+  background-color: #9aa5b1;
+}
+
+.story-sentence {
+  margin: 0 0 0.5rem 0;
+  line-height: 1.5;
+}
+
+.criteria {
+  font-size: 0.9rem;
+  color: #3e4c59;
+}
+
+.criteria-label {
+  font-weight: 600;
+}
+
+.criteria ul {
+  margin: 0.35rem 0 0 0;
+  padding-left: 1.2rem;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: #cf1124;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.delete-btn:hover {
+  text-decoration: underline;
+}

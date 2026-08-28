@@ -1,0 +1,121 @@
+# This is a basic workflow that is manually triggered
+
+name: Manual workflow
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      name:
+        # Friendly description to be shown in the UI instead of 'name'
+        description: 'Person to greet'
+        # Default value if no value is explicitly provided
+        default: 'World'
+        # Input has to be provided for the workflow to run
+        required: true
+        # The data type of the input
+        type: string
+
+# A workflow run is made up of one or more jobs. Por defecto, jobs sin "needs" corren en
+# paralelo. Para que carguen de forma secuencial, cada job declara "needs: <job-anterior>",
+# de modo que no arranca hasta que el anterior termine con éxito.
+jobs:
+  # 1) Job "greet": saludo inicial, igual al workflow original.
+  greet:
+    name: '1. Saludo'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send greeting
+        run: echo "Hello ${{ inputs.name }}"
+
+  # 2) Job "backend": valida que el código de FastAPI instala y compila sin errores.
+  #    Espera a que "greet" termine (needs: greet).
+  backend:
+    name: '2. Backend (FastAPI)'
+    runs-on: ubuntu-latest
+    needs: greet
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        working-directory: backend
+        run: pip install -r requirements.txt
+
+      - name: Verificar que el código importa sin errores
+        working-directory: backend
+        run: python -c "from app import models, schemas"
+
+  # 3) Job "frontend": instala dependencias y compila el build de producción de React.
+  #    Espera a que "backend" termine (needs: backend).
+  frontend:
+    name: '3. Frontend (React)'
+    runs-on: ubuntu-latest
+    needs: backend
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependencias
+        working-directory: frontend
+        run: npm install
+
+      - name: Compilar build de producción
+        working-directory: frontend
+        run: npm run build
+
+  # 4) Job "docker-build": construye las imágenes Docker de los 3 servicios.
+  #    Espera a que "frontend" termine (needs: frontend).
+  docker-build:
+    name: '4. Build de imágenes Docker'
+    runs-on: ubuntu-latest
+    needs: frontend
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Construir imágenes con Docker Compose
+        run: docker compose build
+
+  # 5) Job "integration": levanta el stack completo (React + FastAPI + MySQL) y
+  #    comprueba que backend y frontend responden. Espera a que "docker-build" termine.
+  integration:
+    name: '5. Prueba de integración (stack completo)'
+    runs-on: ubuntu-latest
+    needs: docker-build
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Levantar el stack con Docker Compose
+        run: docker compose up -d
+
+      - name: Esperar a que el backend responda
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:8001/api/health; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "El backend no respondió a tiempo"
+          exit 1
+
+      - name: Verificar que el frontend responde
+        run: curl -sf http://localhost:3000/
+
+      - name: Apagar el stack
+        if: always()
+        run: docker compose down -v

@@ -73,7 +73,7 @@ function App() {
   return (
     <div className="app">
       <header>
-        <h1>📝 Historias de Usuario</h1>
+        <h1>📝 Historia de Usuario</h1>
         <p className="stack">React &bull; FastAPI &bull; MySQL &bull; Docker</p>
       </header>
 
